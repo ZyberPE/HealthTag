@@ -1,0 +1,18 @@
+# NameTag format
+# {rank} = PureChat rank
+# {player} = Player name
+# {hearts} = hearts remaining
+# {healthbar} = visual health bar
+
+format: "{rank} {player}\n{healthbar} {hearts}❤"
+
+health-bar:
+  enabled: true
+  symbol: "❤"
+  bars: 10
+
+colors:
+  high: "§a"    # Green (75%+ health)
+  medium: "§e"  # Yellow (35%-75%)
+  low: "§c"     # Red (<35%)
+  empty: "§7"
