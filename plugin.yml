@@ -1,0 +1,8 @@
+name: HealthTag
+main: HealthTag\Main
+version: 1.0.0
+api: 5.0.0
+author: ZyberPE
+
+depend:
+  - PureChat
