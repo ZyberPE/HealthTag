@@ -16,24 +16,24 @@ use pocketmine\scheduler\ClosureTask;
 
 use _64FF00\PureChat\PureChat;
 
-class Main extends PluginBase implements Listener {
+class Main extends PluginBase implements Listener{
 
     private PureChat $purechat;
     private array $hidden = [];
 
-    public function onEnable(): void {
+    public function onEnable(): void{
 
         $this->saveDefaultConfig();
 
-        $plugin = $this->getServer()->getPluginManager()->getPlugin("PureChat");
+        $pc = $this->getServer()->getPluginManager()->getPlugin("PureChat");
 
-        if(!$plugin instanceof PureChat){
-            $this->getLogger()->error("PureChat dependency missing!");
+        if(!$pc instanceof PureChat){
+            $this->getLogger()->error("PureChat not found! Disabling plugin.");
             $this->getServer()->getPluginManager()->disablePlugin($this);
             return;
         }
 
-        $this->purechat = $plugin;
+        $this->purechat = $pc;
 
         $this->getServer()->getPluginManager()->registerEvents($this,$this);
     }
@@ -95,15 +95,16 @@ class Main extends PluginBase implements Listener {
 
         $format = $this->getConfig()->get("format");
 
-        $rank = $this->purechat->getUserDataMgr()->getGroup($player);
+        # PureChat colored rank
+        $rank = $this->purechat->getNametag($player);
 
         $hearts = round($player->getHealth() / 2);
 
-        $healthBar = $this->createHealthBar($player);
+        $bar = $this->createHealthBar($player);
 
         $tag = str_replace(
             ["{rank}", "{player}", "{hearts}", "{healthbar}"],
-            [$rank, $player->getName(), $hearts, $healthBar],
+            [$rank, $player->getName(), $hearts, $bar],
             $format
         );
 
@@ -122,17 +123,17 @@ class Main extends PluginBase implements Listener {
 
         $percent = $player->getHealth() / $player->getMaxHealth();
 
-        $filled = round($percent * $bars);
+        $filled = (int) round($percent * $bars);
 
-        $color = $this->getHealthColor($percent);
+        $color = $this->getColor($percent);
 
-        $emptyColor = $this->getConfig()->get("colors.empty");
+        $empty = $this->getConfig()->get("colors.empty");
 
         return str_repeat($color.$symbol,$filled) .
-               str_repeat($emptyColor.$symbol,$bars-$filled);
+               str_repeat($empty.$symbol,$bars-$filled);
     }
 
-    private function getHealthColor(float $percent): string{
+    private function getColor(float $percent): string{
 
         $colors = $this->getConfig()->get("colors");
 
